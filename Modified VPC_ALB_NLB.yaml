@@ -14,7 +14,7 @@ Parameters:
 
         Type: 'AWS::EC2::KeyPair::KeyName'
 
-        Default: 'CFFFF'
+        Default: 'jkm'
 
     VPCCIDR:
       Description: Please enter the IP range (CIDR notation) for this VPC
