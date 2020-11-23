@@ -69,19 +69,7 @@ Mappings:
 
 
 
-    NetworkToSubnet:
-
-        "10.0.0.0":
-
-            PubSubnetZoneA: "10.0.10.0/24"
-
-            PrivSubnetZoneA: "10.0.20.0/24"
-
-            PubSubnetZoneB: "10.0.30.0/24"
-
-            PrivSubnetZoneB: "10.0.40.0/24"
-
-
+   
 
 Resources:
 
