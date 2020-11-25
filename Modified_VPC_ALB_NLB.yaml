@@ -1,19 +1,9 @@
-Description: Creates a VPC and a ELB with a EC2 Target Group Associated
-
-
-
+Description: Creating Basic AWS Infrastructure
 Parameters:
-
-
-
     SSHKeyName:
 
-        Description: 'Name of the ec2
-
- key you need one to use this template'
-
+        Description: 'Name of the ec2 key you need one to use this template'
         Type: 'AWS::EC2::KeyPair::KeyName'
-
         Default: 'newkry'
 
     VPCCIDR:
@@ -40,15 +30,7 @@ Parameters:
      Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
      Type: String
      Default: 10.0.0.16/28
-
-
-
-
-
 Mappings:
-
-
-
     RegionToAmazonAMI:
 
         us-east-1:
@@ -67,15 +49,8 @@ Mappings:
 
             HVM64: ami-0bb5806b2e825a199
 
-
-
-   
-
 Resources:
-
-
-
-    # VPC
+# VPC
 
     VPC:
 
@@ -99,10 +74,7 @@ Resources:
                   Value:
 
                       Ref: 'AWS::StackName'
-
-
-
-    # Internet accessable subnet in the first availability zone
+# Public subnet in the first AZ
 
     PubSubnetZoneA:
         Type: AWS::EC2::Subnet
@@ -116,9 +88,7 @@ Resources:
               Value:
                 'Fn::Join': [ ':', [ 'Public', 'Zone A', !Ref 'AWS::StackName' ] ]
 
-
-
-    # Non-internet accessable subnet in the first availability zone
+  # Private subnet in the first AZ
 
     PrivSubnetZoneA:
 
@@ -133,8 +103,7 @@ Resources:
             Value:
               'Fn::Join': [ ':', [ 'Private', 'Zone A', !Ref 'AWS::StackName' ] ]
 
-
-    # Internet accessable subnet in the second availability zone
+  # Public subnet in the 2nd AZ
 
     PubSubnetZoneB:
 
@@ -149,8 +118,7 @@ Resources:
             Value:
               'Fn::Join': [ ':', [ 'Public', 'Zone B', !Ref 'AWS::StackName' ] ]
 
-
-    # Non-internet accessable subnet in the second availability zone
+  # Private subnet in 2nd AZ
 
     PrivSubnetZoneB:
 
@@ -182,9 +150,7 @@ Resources:
 
                       Ref: 'AWS::StackName'
 
-
-
-    # Associate the gateway to the VPC
+  # Attaching  gateway to VPC
 
     GatewayAttachment:
 
@@ -200,9 +166,7 @@ Resources:
 
                 Ref: 'VPC'
 
-
-
-    # Routing table for the public subnet in availability zone A
+  # Route table for the public subnet in AZ A
 
     RouteTablePubZoneA:
 
@@ -222,9 +186,7 @@ Resources:
 
                       'Fn::Join': [ ':', [ 'Public', 'Zone A', !Ref 'AWS::StackName' ] ]
 
-
-
-    # Routing table for the public subnet in availability zone B
+#  Route table for the public subnet in AZ B
 
     RouteTablePubZoneB:
 
@@ -244,9 +206,7 @@ Resources:
 
                       'Fn::Join': [ ':', [ 'Public', 'Zone B', !Ref 'AWS::StackName' ] ]
 
-
-
-    # Route traffic through the internet gateway
+# Route traffic through the internet gateway
 
     RoutePubZoneA:
 
@@ -268,9 +228,7 @@ Resources:
 
                 Ref: 'RouteTablePubZoneA'
 
-
-
-    # Route traffic through the internet gateway
+  # Route traffic through the internet gateway
 
     RoutePubZoneB:
 
@@ -292,9 +250,7 @@ Resources:
 
                 Ref: 'RouteTablePubZoneB'
 
-
-
-    # Associate public subnet to its routing table
+# Attach public subnet to its RT
 
     RouteAssociationPubSubnetZoneA:
 
@@ -310,9 +266,7 @@ Resources:
 
                 Ref: 'RouteTablePubZoneA'
 
-
-
-    # Associate public subnet to its routing table
+# Attach public subnet to its RT
 
     RouteAssociationPubSubnetZoneB:
 
@@ -328,9 +282,7 @@ Resources:
 
                 Ref: 'RouteTablePubZoneB'
 
-
-
-    # Routing table for the private subnet in availability zone A
+  # Route table for the private subnet in AZ A
 
     RouteTablePrivZoneA:
 
@@ -350,9 +302,7 @@ Resources:
 
                       'Fn::Join': [ ':', [ 'Private', 'Zone A', !Ref 'AWS::StackName' ] ]
 
-
-
-    # Routing table for the private subnet in availability zone B
+# Route table for the private subnet in AZ B
 
     RouteTablePrivZoneB:
 
@@ -372,9 +322,7 @@ Resources:
 
                       'Fn::Join': [ ':', [ 'Private', 'Zone B', !Ref 'AWS::StackName' ] ]
 
-
-
-    # Associate the private subnet with its routing table
+  # Associate the private subnet with its routing table
 
     RouteAssociationPrivSubnetZoneA:
 
@@ -390,9 +338,7 @@ Resources:
 
                 Ref: 'RouteTablePrivZoneA'
 
-
-
-    # Associate the private subnet with its routing table
+  # Associate the private subnet with its routing table
 
     RouteAssociationPrivSubnetZoneB:
 
@@ -408,9 +354,7 @@ Resources:
 
                 Ref: 'RouteTablePrivZoneB'
 
-
-
-    # EC2 Security Group Allowing Port 22 and 80 from anywhere
+  # EC2 Security Group Allowing Port 22 and 80 from anywhere
 
     EC2SecurityGroup:
 
@@ -445,9 +389,7 @@ Resources:
 
                       Ref: ELBSecurityGroup
 
-
-
-    # ELB Security Group allowing Port 80 from anywhere
+# ELB Security Group allowing Port 80 from anywhere
 
     ELBSecurityGroup:
 
@@ -471,11 +413,7 @@ Resources:
 
                   CidrIp: 0.0.0.0/0
 
-
-
-
-
-    # Linux Instance with Apache running on Port 80
+#  EC2 Linux Instance with Apache on Port 80
 
     AmazonLinuxInstance:
 
@@ -545,79 +483,74 @@ Resources:
 
               --region ${AWS::Region}
 
-
-
     AmazonLinuxInstance1:
 
-                Type: AWS::EC2::Instance
+                            Type: AWS::EC2::Instance
 
-                Properties:
+                            Properties:
 
-                  ImageId:
+                              ImageId:
 
-                    Fn::FindInMap:
+                                Fn::FindInMap:
 
-                      - RegionToAmazonAMI
+                                  - RegionToAmazonAMI
 
-                      - Ref: 'AWS::Region'
+                                  - Ref: 'AWS::Region'
 
-                      - HVM64
+                                  - HVM64
 
-                  InstanceInitiatedShutdownBehavior: stop
+                              InstanceInitiatedShutdownBehavior: stop
 
-                  InstanceType: t2.nano
+                              InstanceType: t2.nano
 
-                  KeyName:
+                              KeyName:
 
-                    Ref: SSHKeyName
+                                Ref: SSHKeyName
 
-                  Monitoring: 'true'
+                              Monitoring: 'true'
 
-                  NetworkInterfaces:
+                              NetworkInterfaces:
 
-                  - AssociatePublicIpAddress: 'true'
+                              - AssociatePublicIpAddress: 'true'
 
-                    DeviceIndex: '0'
+                                DeviceIndex: '0'
 
-                    GroupSet:
+                                GroupSet:
 
-                    - !Ref EC2SecurityGroup
+                                - !Ref EC2SecurityGroup
 
-                    SubnetId:
+                                SubnetId:
 
-                      Ref: PubSubnetZoneB
+                                  Ref: PubSubnetZoneB
 
-                  Tenancy: default
+                              Tenancy: default
 
-                  UserData:
+                              UserData:
 
-                    Fn::Base64: !Sub |
+                                Fn::Base64: !Sub |
 
-                      #!/bin/bash -xe
+                                  #!/bin/bash -xe
 
-                      cd /tmp
+                                  cd /tmp
 
-                      yum update -y
+                                  yum update -y
 
-                      yum install -y httpd24
+                                  yum install -y httpd24
 
-                      echo "Healthy123" > /var/www/html/index.html
+                                  echo "Healthy123" > /var/www/html/index.html
 
-                      service httpd start
+                                  service httpd start
 
-                      /opt/aws/bin/cfn-signal \
+                                  /opt/aws/bin/cfn-signal \
 
-                        -e $? \
+                                    -e $? \
 
-                        --stack ${AWS::StackName} \
+                                    --stack ${AWS::StackName} \
 
-                        --resource AmazonLinuxInstance \
+                                    --resource AmazonLinuxInstance \
 
-                        --region ${AWS::Region}
-
-
-
-    # Target Group
+                                    --region ${AWS::Region}
+  # Target Group
 
     EC2TargetGroup3:
 
@@ -679,14 +612,7 @@ Resources:
 
           Value: 80
 
-
-
     #ELB (ALB)
-
-
-
-
-
     ALBListener:
 
           Type: AWS::ElasticLoadBalancingV2::Listener
@@ -726,84 +652,3 @@ Resources:
         SecurityGroups:
 
         - Ref: ELBSecurityGroup
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #NLB Implementation
-
-
-    NetworkLoadBalancer:
-            Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-            Properties:
-              Name: networkloadbalancer
-              Scheme: internet-facing
-              Subnets:
-                - Ref: PubSubnetZoneA
-                - Ref: PubSubnetZoneB
-              Type: network
-              Tags:
-                - Key: Name
-                  Value: networklb
-    NetworkLoadBalancerTargetGroup:
-            Type: AWS::ElasticLoadBalancingV2::TargetGroup
-            Properties:
-              Name: networklb-target
-              Port: 443
-              Protocol: TCP
-              VpcId:
-                Ref: 'VPC'
-              TargetGroupAttributes:
-                - Key: deregistration_delay.timeout_seconds
-                  Value: 60
-              Targets:
-                - Id:
-
-                    Ref: AmazonLinuxInstance
-
-                  Port: 443
-
-                - Id:
-
-                    Ref: AmazonLinuxInstance1
-
-                  Port: 443
-              Tags:
-                - Key: Name
-                  Value: networklb-target
-
-    NetworkLoadBalancerListener:
-            Type: AWS::ElasticLoadBalancingV2::Listener
-            Properties:
-              DefaultActions:
-              - Type: forward
-                TargetGroupArn: !Ref NetworkLoadBalancerTargetGroup
-              LoadBalancerArn: !Ref NetworkLoadBalancer
-              Port: 443
-              Protocol: TCP
